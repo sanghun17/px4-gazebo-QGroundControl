@@ -1,0 +1,58 @@
+procedure
+1) Install Ros(melodic version), MAVLink, Gazebo
+2) Build PX4 firmware
+3) Install QGroundControl
+4) execute
+
+1) Install Ros, MAVLink, Gazebo
+
+	open terminal and 
+	//
+	wget https://raw.githubusercontent.com/PX4/Devguide/master/build_scripts/ubuntu_sim_ros_melodic.sh
+	source ubuntu_sim_ros_melodic.sh
+	cd catkin_ws
+	catkin make
+	//
+
+2) Build PX4 firmware
+
+	open terminal and
+	//
+	cd ~
+	mkdir src
+	cd src
+	git clone https://github.com/PX4/Firmware.git
+	cd Firmware
+	make px4_sitl jmavsim
+	//
+
+3) Install QgroundControl
+	go to link: 
+	https://s3-us-west-2.amazonaws.com/qgroundcontrol/builds/master/QGroundControl.AppImage
+
+	open terminal and
+	//
+	sudo usermode -a -G dialout $USER
+	sudo apt-get remove modemmanager -y
+	sudo apt install gstreamer1.0-plugins-bad gstreamer1.0-libav gstreamer1.0-gl -y
+
+
+	logout and login again and
+
+	open terminal and
+	//
+	chmod +x ./QGroundControl.AppImage
+	//
+
+4) executate 
+
+	open terminal and
+	//
+	./QGroundControl.AppImage
+	//
+
+	open other termianl and
+	//
+	cd src/Firmware/
+	sudo make px4_sitl
+	//
