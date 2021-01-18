@@ -11,7 +11,7 @@ procedure
 	wget https://raw.githubusercontent.com/PX4/Devguide/master/build_scripts/ubuntu_sim_ros_melodic.sh
 	source ubuntu_sim_ros_melodic.sh
 	cd catkin_ws
-	catkin make
+	catkin build
 	//
 
 2) Build PX4 firmware
@@ -23,7 +23,14 @@ procedure
 	cd src
 	git clone https://github.com/PX4/Firmware.git
 	cd Firmware
-	make px4_sitl jmavsim
+	sudo apt install python3-pip
+	pip3 install --user empy
+	pip3 install --user pyros-genmsg
+	pip3 install --user packaging
+	pip3 install --user toml
+	pip3 install --user numpy
+	pip3 install --user jinja2
+	sudo make px4_sitl jmavsim
 	//
 
 3) Install QgroundControl
@@ -32,8 +39,9 @@ procedure
 
 	open terminal and
 	//
-	sudo usermode -a -G dialout $USER
+	sudo usermod -a -G dialout $USER
 	sudo apt-get remove modemmanager -y
+	sudo apt autoremove
 	sudo apt install gstreamer1.0-plugins-bad gstreamer1.0-libav gstreamer1.0-gl -y
 
 
@@ -41,6 +49,7 @@ procedure
 
 	open terminal and
 	//
+	cd Downloads
 	chmod +x ./QGroundControl.AppImage
 	//
 
@@ -54,5 +63,41 @@ procedure
 	open other termianl and
 	//
 	cd src/Firmware/
-	sudo make px4_sitl
+	sudo apt install libgstreamer1.0-dev
+	sudo make px4_sitl gazebo
 	//
+	now, if you give mission(waypoints) from QGroundControl, drone moves in Gazebo.
+
+5) give mission from ROS
+
+	////
+	5-1) initial setup
+
+		open .bashrc and add below at .bashrc
+			
+			#Set PX4
+			source ~/src/Firmware/Tools/setup_gazebo.bash ~/src/Firmware ~/src/Firmware/build/posix_sitl_default
+			#source devel/setup.bash
+			export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:~/src/Firmware
+			export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:~/src/Firmware/Tools/sitl_gazebo
+
+		' ~/src ' should be changed to right location of ' Firmware '.
+	////
+	
+	open terminal and
+	//
+	cd src/Firmware/
+	sudo apt install libgstreamer1.0-dev
+	sudo make px4_sitl gazebo
+	//
+	
+	open other terminal and
+	//
+	roslaunch modudculab_ros ctrl_traj_gazebo.launch fcu_url:="udp://:14540@127.0.0.1:14557"
+	//
+		where 
+		modudculab_ros: package name
+		ctrl_traj_gazebo.launch: launch file name
+		fcu_url:="udp://:14540@127.0.0.1:14557" : option, you can modified this at laucnh file.
+
+	
