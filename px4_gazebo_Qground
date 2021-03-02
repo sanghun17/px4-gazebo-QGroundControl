@@ -95,6 +95,7 @@ procedure
 	//
 	cd ~/catkin_ws/src
 	git clone https://github.com/Jaeyoung-Lim/modudculab_ros.git
+	sudo apt-get install ros-melodic-mavros*
 	catkin build modudculab_ros
 	roslaunch modudculab_ros ctrl_traj_gazebo.launch fcu_url:="udp://:14540@127.0.0.1:14557"
 	//
